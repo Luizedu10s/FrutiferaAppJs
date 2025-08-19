@@ -1,0 +1,25 @@
+    body {
+            background: #f8f9fa;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .card {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            border: 1px solid #111;
+        }
+        .card-body > * {
+            padding-bottom: 0.4rem;
+        }
+        .age-badge {
+            font-size: 0.95em;
+            background: #111 !important;
+        }
+        .modal-header {
+            background: #111 !important;
+            color: #fff;
+        }
+        .btn-success, .btn-success:hover, .btn-success:focus, .btn-success:active {
+            background: #111 !important;
+            border: none !important;
+        }
