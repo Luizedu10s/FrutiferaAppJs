@@ -1,15 +1,17 @@
+
+// DICIONARIO QUE VAI ARMAZENAR MÉTODOS DE GERENCIAMENTO DAS FRUTEIRAS
 var GerenciadorFruteiras = {
-    chaveStorage: 'fruteria-brejeira',
-    gerarIdentificador: function() {
-        return Math.floor(Date.now() / 100) + Math.floor(Math.random() * 9000);
+    chaveStorage: 'fruteria-brejeira', // CHAVE DO LOCALSTORAGE
+    gerarIdentificador: function() { // GERAR ID ÚNICO DA FRUTA
+        return Date.now();
     },
-    obterTodas: function() {
+    obterTodas: function() { // OBTER TODAS AS FRUTEIRAS
         var dados = localStorage.getItem(this.chaveStorage);
         if (dados) {
             return JSON.parse(dados);
         }
         return [];
-    },
+    }, // SALVAR FRUTEIRA
     salvar: function(fruteira) {
         var lista = this.obterTodas();
         if (fruteira.id) {
@@ -19,13 +21,13 @@ var GerenciadorFruteiras = {
                     break;
                 }
             }
-        } else {
+        } else { // CASO NÃO TENHA ID, É UMA NOVA FRUTEIRA
             fruteira.id = this.gerarIdentificador();
             lista.push(fruteira);
-        }
+        } // ATUALIZA O LOCALSTORAGE
         localStorage.setItem(this.chaveStorage, JSON.stringify(lista));
         return fruteira;
-    },
+    },// REMOVER FRUTEIRA
     remover: function(id) {
         var lista = this.obterTodas();
         var novaLista = [];
@@ -33,69 +35,70 @@ var GerenciadorFruteiras = {
             if (lista[i].id != id) {
                 novaLista.push(lista[i]);
             }
-        }
+        } // ATUALIZA O LOCALSTORAGE
         localStorage.setItem(this.chaveStorage, JSON.stringify(novaLista));
-    },
+    }, // BUSCAR FRUTEIRA POR ID
     buscarPorId: function(id) {
         var lista = this.obterTodas();
         for (var i = 0; i < lista.length; i++) {
             if (lista[i].id == id) {
                 return lista[i];
             }
-        }
+        } // SE ELE NÃO ENCONTRAR, RETORNA NULO
         return null;
-    },
-    idadeEmMeses: function(dataPlantio) {
+    }, // CALCULA A IDADE EM MESES
+        idadeEmMeses: function(dataPlantio) {
         var hoje = new Date();
         var data = new Date(dataPlantio);
-        var tempo = hoje - data;
-        var meses = Math.floor(tempo / (1000 * 60 * 60 * 24 * 30));
-        return meses >= 0 ? meses : 0;
-    },
+        var anos = hoje.getFullYear() - data.getFullYear(); // CALCULA A DIFERENÇA DE ANOS
+        var meses = hoje.getMonth() - data.getMonth(); // CALCULA A DIFERENÇA DE MESES
+        var totalMeses = anos * 12 + meses; 
+        return totalMeses >= 0 ? totalMeses : 0; // RETORNA O VALOR EM MESES E NÃO RETORNA NEGATIVO
+    },// COLOCA A DATA PARA O PADRÃO BRASILEIRO
     formatarData: function(dataStr) {
         var data = new Date(dataStr);
         return data.toLocaleDateString('pt-BR');
     }
 };
-
+//  CONTROLE DA INTERAÇÃO COM O USUÁRIO
 var ControleUI = {
-    elementos: {
-        container: document.getElementById('plants-container'),
-        formulario: document.getElementById('plant-form'),
+    elementos: { // CAPTURA OS ELEMENTOS DA PÁGINA
+        container: document.getElementById('container-das-plantas'),
+        formulario: document.getElementById('formulario-da-planta'),
         modal: document.getElementById('plantModal'),
-        alerta: document.getElementById('no-plants-alert'),
-        botaoSalvar: document.getElementById('save-plant')
+        alerta: document.getElementById('nao-ha-plantas'),
+        botaoSalvar: document.getElementById('salvar-item-planta')
     },
     idEdicao: null,
     iniciar: function() {
-        this.listarFruteiras();
-        this.configurarEventos();
+        this.listarFruteiras(); // LISTA AS FRUTEIRAS AO INICIAR
+        this.configurarEventos(); // CONFIGURA OS EVENTOS
     },
     configurarEventos: function() {
-        var self = this;
-        this.elementos.botaoSalvar.addEventListener('click', function() {
-            self.salvarFruteira();
-        });
-        this.elementos.modal.addEventListener('hidden.bs.modal', function() {
+        var self = this; 
+        this.elementos.botaoSalvar.addEventListener('click', function() { // ADICIONA EVENTO AO BOTÃO DE SALVAR
+            self.salvarFruteira(); // SALVA A FRUTEIRA
+        }); 
+        this.elementos.modal.addEventListener('hidden.bs.modal', function() { // LIMPA O FORMULÁRIO QUANDO O MODAL FOR FECHADO
             self.elementos.formulario.reset();
-            document.getElementById('plant-id').value = '';
+            document.getElementById('identificador-da-planta').value = '';
             self.idEdicao = null;
         });
-    },
+    }, // CAPTURA E SALVA AS INFORMAÇÕES DA FRUTEIRA
     salvarFruteira: function() {
-        var nomePopular = document.getElementById('common-name').value.trim();
-        var nomeCientifico = document.getElementById('scientific-name').value.trim();
-        var producaoMedia = document.getElementById('average-production').value;
-        var dataPlantio = document.getElementById('planting-date').value;
-        var idFruteira = document.getElementById('plant-id').value;
+        var nomePopular = document.getElementById('nome-popular').value.trim();
+        var nomeCientifico = document.getElementById('nome-na-ciencia').value.trim();
+        var producaoMedia = document.getElementById('media-kg-producao').value;
+        var dataPlantio = document.getElementById('data-de-plantio').value;
+        var idFruteira = document.getElementById('identificador-da-planta').value;
         if (!nomePopular || !producaoMedia || !dataPlantio) {
-            alert('Preencha todos os campos obrigatórios.');
+            alert('Preencha todos os campos obrigatórios.'); // TRATA OS CAMPOS OBRIGATÓRIOS
             return;
         }
         if (isNaN(parseFloat(producaoMedia)) || parseFloat(producaoMedia) < 0) {
-            alert('Produção média deve ser positiva.');
+            alert('Produção média deve ser positiva.'); // TRATA O VALOR EM PRODUÇÃO
             return;
-        }
+        } // CRIA UM OBJETO CHAMADO FRUTEIRA
         var fruteira = {
             id: idFruteira || null,
             nomePopular: nomePopular,
@@ -103,29 +106,30 @@ var ControleUI = {
             producaoMedia: parseFloat(producaoMedia),
             dataPlantio: dataPlantio
         };
-        GerenciadorFruteiras.salvar(fruteira);
+        GerenciadorFruteiras.salvar(fruteira); // SALVA A FRUTEIRA
         this.listarFruteiras();
-        var modal = bootstrap.Modal.getInstance(this.elementos.modal);
-        modal.hide();
-    },
+        var modal = bootstrap.Modal.getInstance(this.elementos.modal); 
+        modal.hide(); // FECHA O MODAL
+
+    }, // CAPTURA AS INFORMAÇÕES DA FRUTEIRA PARA EDIÇÃO
     editarFruteira: function(id) {
         var fruteira = GerenciadorFruteiras.buscarPorId(id);
-        if (!fruteira) return;
-        document.getElementById('plant-id').value = fruteira.id;
-        document.getElementById('common-name').value = fruteira.nomePopular;
-        document.getElementById('scientific-name').value = fruteira.nomeCientifico;
-        document.getElementById('average-production').value = fruteira.producaoMedia;
-        document.getElementById('planting-date').value = fruteira.dataPlantio;
+        if (!fruteira) return; // SE NÃO ENCONTRAR FRUTEIRA, SAI DA FUNÇÃO
+        document.getElementById('identificador-da-planta').value = fruteira.id;
+        document.getElementById('nome-popular').value = fruteira.nomePopular;
+        document.getElementById('nome-na-ciencia').value = fruteira.nomeCientifico;
+        document.getElementById('media-kg-producao').value = fruteira.producaoMedia;
+        document.getElementById('data-de-plantio').value = fruteira.dataPlantio;
         this.idEdicao = fruteira.id;
         var modal = new bootstrap.Modal(this.elementos.modal);
         modal.show();
-    },
+    }, // EXCLUI A FRUTEIRA
     excluirFruteira: function(id) {
         if (confirm('Deseja realmente excluir esta fruteira?')) {
             GerenciadorFruteiras.remover(id);
             this.listarFruteiras();
         }
-    },
+    }, // LISTA AS FRUTEIRAS NA TELA
     listarFruteiras: function() {
         var lista = GerenciadorFruteiras.obterTodas();
         this.elementos.container.innerHTML = '';
@@ -134,6 +138,8 @@ var ControleUI = {
             return;
         }
         this.elementos.alerta.classList.add('d-none');
+
+        // CAPTURA OS DADOS DE CADA FRUTEIRA E CRIA OS CARDS PARA CADA UMA.
         for (var i = 0; i < lista.length; i++) {
             var fruteira = lista[i];
             var idade = GerenciadorFruteiras.idadeEmMeses(fruteira.dataPlantio);
@@ -158,7 +164,7 @@ var ControleUI = {
                 '</div>' +
                 '</div>' +
                 '</div>';
-            this.elementos.container.appendChild(card);
+            this.elementos.container.appendChild(card); // ADICIONA O CARD NO CONTAINER
         }
     }
 };
@@ -172,7 +178,7 @@ function adicionarBootstrapIcons() {
         link.id = 'bootstrap-icons';
         document.head.appendChild(link);
     }
-}
+} // INICIA O CONTROLE DA UI QUANDO O DOM ESTIVER CARREGADO
 document.addEventListener('DOMContentLoaded', function() {
     adicionarBootstrapIcons();
     ControleUI.iniciar();
