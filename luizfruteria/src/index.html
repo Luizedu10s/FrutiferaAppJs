@@ -6,7 +6,7 @@
     <title>Fruteiras do Brejo Paraibano</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
     <!-- Header Bootstrap -->
@@ -67,41 +67,41 @@
         <div class="d-flex justify-content-end mb-3">
             <button class="btn btn-dark btn-lg rounded-circle" style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:2rem;" title="Cadastrar Fruteira" data-bs-toggle="modal" data-bs-target="#plantModal">+</button>
         </div>
-        <div id="no-plants-alert" class="alert alert-warning d-none">Nenhuma fruteira cadastrada.</div>
-        <div id="plants-container" class="row g-3"></div>
+        <div id="nao-ha-plantas" class="alert alert-warning d-none">Nenhuma fruteira cadastrada.</div>
+        <div id="container-das-plantas" class="row g-3"></div>
     </div>
 
     <!-- Modal de Cadastro/Edição -->
     <div class="modal fade" id="plantModal" tabindex="-1" aria-labelledby="plantModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <form id="plant-form">
+          <form id="formulario-da-planta">
             <div class="modal-header">
               <h5 class="modal-title" id="plantModalLabel">Cadastrar Fruteira</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
-              <input type="hidden" id="plant-id">
+              <input type="hidden" id="identificador-da-planta">
               <div class="mb-3">
-                <label for="common-name" class="form-label">Nome comum *</label>
-                <input type="text" class="form-control" id="common-name" required>
+                <label for="nome-popular" class="form-label">Nome comum *</label>
+                <input type="text" class="form-control" id="nome-popular" required>
               </div>
               <div class="mb-3">
-                <label for="scientific-name" class="form-label">Nome científico</label>
-                <input type="text" class="form-control" id="scientific-name">
+                <label for="nome-na-ciencia" class="form-label">Nome científico</label>
+                <input type="text" class="form-control" id="nome-na-ciencia">
               </div>
               <div class="mb-3">
-                <label for="average-production" class="form-label">Produção média (Kg/safra) *</label>
-                <input type="number" class="form-control" id="average-production" min="0" step="0.01" required>
+                <label for="media-kg-producao" class="form-label">Produção média (Kg/safra) *</label>
+                <input type="number" class="form-control" id="media-kg-producao" min="0" step="0.01" required>
               </div>
               <div class="mb-3">
-                <label for="planting-date" class="form-label">Data do plantio *</label>
-                <input type="date" class="form-control" id="planting-date" required>
+                <label for="data-de-plantio" class="form-label">Data do plantio *</label>
+                <input type="date" class="form-control" id="data-de-plantio" required>
               </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-dark" id="save-plant">Salvar</button>
+              <button type="button" class="btn btn-dark" id="salvar-item-planta">Salvar</button>
             </div>
           </form>
         </div>
@@ -112,7 +112,6 @@
     <footer class="bg-dark text-light py-4 mt-5">
       <div class="container text-center">
         <span class="fw-bold">Fruteria Brejeira</span> &copy; 2025 &mdash; Todos os direitos reservados.<br>
-        <small>Desenvolvido por estudante de tsi.</small>
       </div>
     </footer>
     <!-- Bootstrap JS -->
